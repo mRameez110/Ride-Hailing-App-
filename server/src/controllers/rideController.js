@@ -37,6 +37,21 @@ const getSingleRide = async (req, res, next) => {
   }
 };
 
+const updateRideStatus = async (req, res, next) => {
+  try {
+    const ride = await updateRideStatusService(
+      req.params.id,
+      req.user._id,
+      req.body.status
+      );
+      
+    res.status(200).json({ message: "Ride updated", ride });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 module.exports = {
   requestRide,
   getRideHistory,
