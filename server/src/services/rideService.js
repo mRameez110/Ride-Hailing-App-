@@ -46,4 +46,5 @@ module.exports = {
   getRideHistoryService,
   getSingleRideService,
   updateRideStatusService,
+  s,
 };
