@@ -1,6 +1,7 @@
 const {
   requestRideService,
   getRideHistoryService,
+  getSingleRideService,
 } = require("../services/rideService");
 
 const requestRide = async (req, res, next) => {
@@ -27,7 +28,17 @@ const getRideHistory = async (req, res, next) => {
   }
 };
 
+const getSingleRide = async (req, res, next) => {
+  try {
+    const ride = await getSingleRideService(req.params.id);
+    res.status(200).json({ ride });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   requestRide,
   getRideHistory,
+  getSingleRide,
 };
