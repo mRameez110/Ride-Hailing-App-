@@ -18,6 +18,12 @@ const getRideHistoryService = async (userId) => {
   return rides;
 };
 
+const getSingleRideService = async (rideId) => {
+  const ride = await Ride.findById(rideId);
+  if (!ride) throw new Error("Ride not found");
+  return ride;
+};
+
 module.exports = {
   requestRideService,
   getRideHistoryService,
