@@ -1,5 +1,10 @@
 const User = require("../models/User");
 
+const generateToken = (user) => {
+  return jwt.sign({ id: user._id, type: user.type }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+};
 
 const registerService = async (req) => {
   const { name, email, password, type } = req.body;
