@@ -1,4 +1,3 @@
-
 const registerUser = async (req, res, next) => {
   try {
     const { newUser } = await registerService(req.body);
@@ -16,7 +15,6 @@ const registerUser = async (req, res, next) => {
     next(err);
   }
 };
-
 
 const loginUser = async (req, res, next) => {
   try {
