@@ -32,7 +32,6 @@ const updateRideStatusService = async (rideId, userId, status) => {
     throw new Error("Not authorized to update this ride");
   }
 
-
   if (status === "Accepted") {
     ride.driver = userId;
   }
@@ -45,4 +44,6 @@ const updateRideStatusService = async (rideId, userId, status) => {
 module.exports = {
   requestRideService,
   getRideHistoryService,
+  getSingleRideService,
+  updateRideStatusService,
 };
