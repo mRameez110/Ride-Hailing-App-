@@ -1,4 +1,7 @@
-const { requestRideService } = require("../services/rideService");
+const {
+  requestRideService,
+  getRideHistoryService,
+} = require("../services/rideService");
 
 const requestRide = async (req, res, next) => {
   try {
@@ -12,3 +15,19 @@ const requestRide = async (req, res, next) => {
   }
 };
 
+const getRideHistory = async (req, res, next) => {
+  try {
+    const rides = await getRideHistoryService(req.user._id);
+    res.status(200).json({
+      message: "Ride history fetched",
+      rides,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {
+  requestRide,
+  getRideHistory,
+};
