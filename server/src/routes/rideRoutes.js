@@ -1,15 +1,19 @@
 const express = require("express");
+const router = express.Router();
+const checkAuth = require("../middlewares/authMiddleware");
+
 const {
   requestRide,
   getRideHistory,
+  getPendingRides,
+  updateRideStatus,
+  getCurrentRide,
 } = require("../controllers/rideController");
-const checkAuth = require("../middlewares/authMiddleware");
-
-const router = express.Router();
 
 router.post("/", checkAuth, requestRide);
 router.get("/", checkAuth, getRideHistory);
-router.get("/:id", checkAuth, getSingleRide);
-router.patch("/:id/status", checkAuth, updateRideStatus);
+router.get("/pending", checkAuth, getPendingRides);
+router.get("/current", checkAuth, getCurrentRide);
+router.post("/update-status/:id", checkAuth, updateRideStatus);
 
 module.exports = router;

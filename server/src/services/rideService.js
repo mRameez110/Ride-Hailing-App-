@@ -1,6 +1,6 @@
-const Ride = require("../models/Ride");
+const Ride = require("../models/rideModel");
 
-const requestRideService = async (data, userId) => {
+exports.requestRideService = async (data, userId) => {
   const { pickupLocation, dropLocation, rideType } = data;
 
   const ride = await Ride.create({
@@ -13,38 +13,46 @@ const requestRideService = async (data, userId) => {
   return ride;
 };
 
-const getRideHistoryService = async (userId) => {
-  const rides = await Ride.find({ passenger: userId }).sort({ createdAt: -1 });
+exports.getRideHistoryService = async (userId, userType) => {
+  const query =
+    userType === "driver" ? { driver: userId } : { passenger: userId };
+
+  const rides = await Ride.find(query)
+    .populate("passenger", "name")
+    .sort({ createdAt: -1 });
+
   return rides;
 };
 
-const getSingleRideService = async (rideId) => {
-  const ride = await Ride.findById(rideId);
-  if (!ride) throw new Error("Ride not found");
-  return ride;
+exports.getPendingRidesService = async () => {
+  const rides = await Ride.find({ status: "Requested" }).populate(
+    "passenger",
+    "name"
+  );
+  return rides;
 };
 
-const updateRideStatusService = async (rideId, userId, status) => {
+exports.updateRideStatusService = async (rideId, status) => {
   const ride = await Ride.findById(rideId);
   if (!ride) throw new Error("Ride not found");
 
-  if (ride.driver && ride.driver.toString() !== userId.toString()) {
-    throw new Error("Not authorized to update this ride");
-  }
-
-  if (status === "Accepted") {
-    ride.driver = userId;
-  }
-
   ride.status = status;
+
+  // assign driver if accepting
+  if (status === "Accepted" && !ride.driver) {
+    ride.driver = ride.driver || ride.passenger; // optional fallback
+  }
+
   await ride.save();
   return ride;
 };
 
-module.exports = {
-  requestRideService,
-  getRideHistoryService,
-  getSingleRideService,
-  updateRideStatusService,
-  s,
+exports.getCurrentRideService = async (userId, userType) => {
+  const query =
+    userType === "driver"
+      ? { driver: userId, status: "In Progress" }
+      : { passenger: userId, status: "In Progress" };
+
+  const ride = await Ride.findOne(query);
+  return ride;
 };

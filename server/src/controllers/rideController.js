@@ -1,10 +1,12 @@
 const {
   requestRideService,
   getRideHistoryService,
-  getSingleRideService,
+  getPendingRidesService,
+  updateRideStatusService,
+  getCurrentRideService,
 } = require("../services/rideService");
 
-const requestRide = async (req, res, next) => {
+exports.requestRide = async (req, res, next) => {
   try {
     const ride = await requestRideService(req.body, req.user._id);
     res.status(201).json({
@@ -16,9 +18,11 @@ const requestRide = async (req, res, next) => {
   }
 };
 
-const getRideHistory = async (req, res, next) => {
+exports.getRideHistory = async (req, res, next) => {
   try {
-    const rides = await getRideHistoryService(req.user._id);
+    const userId = req.user._id;
+    const userType = req.user.type;
+    const rides = await getRideHistoryService(userId, userType);
     res.status(200).json({
       message: "Ride history fetched",
       rides,
@@ -28,31 +32,48 @@ const getRideHistory = async (req, res, next) => {
   }
 };
 
-const getSingleRide = async (req, res, next) => {
+exports.getPendingRides = async (req, res, next) => {
   try {
-    const ride = await getSingleRideService(req.params.id);
-    res.status(200).json({ ride });
+    const rides = await getPendingRidesService();
+    res.status(200).json({
+      message: "Pending Rides",
+      rides,
+    });
   } catch (err) {
     next(err);
   }
 };
 
-const updateRideStatus = async (req, res, next) => {
+exports.updateRideStatus = async (req, res, next) => {
   try {
-    const ride = await updateRideStatusService(
-      req.params.id,
-      req.user._id,
-      req.body.status
-    );
-
-    res.status(200).json({ message: "Ride updated", ride });
+    const rideId = req.params.id;
+    const { status } = req.body;
+    const updatedRide = await updateRideStatusService(rideId, status);
+    res.status(200).json({
+      message: `Ride ${status.toLowerCase()} successfully`,
+      ride: updatedRide,
+    });
   } catch (err) {
     next(err);
   }
 };
 
-module.exports = {
-  requestRide,
-  getRideHistory,
-  getSingleRide,
+exports.getCurrentRide = async (req, res, next) => {
+  try {
+    console.log("Current ride API hit", req.user);
+    const ride = await getCurrentRideService(req.user._id, req.user.type);
+
+    if (!ride) {
+      return res.status(404).json({ message: "No active ride found" });
+    }
+
+    console.log("Current Ride:", ride);
+
+    res.status(200).json({
+      message: "Active Rides fetched successfully",
+      ride,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
