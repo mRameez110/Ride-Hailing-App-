@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:3001/api", // Change if needed
+  baseURL: "http://localhost:3001/api",
 });
 
 export const loginUser = async (data) => {

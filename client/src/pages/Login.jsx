@@ -2,25 +2,28 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { loginUser } from "../utils/authService";
+import { showErrorToast, showSuccessToast } from "../utils/errorHandler";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [error, setError] = useState("");
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+
     try {
       const res = await loginUser(formData);
+      console.log("see login res", res.user, res.token);
       login(res.user, res.token);
+      showSuccessToast("Login successfully");
       navigate("/dashboard");
     } catch (err) {
-      setError(err?.response?.data?.message || "Login failed");
+      showErrorToast(err);
+      console.error("Login error:", err);
     }
   };
 
@@ -31,12 +34,6 @@ const Login = () => {
         className="bg-white shadow-md p-6 rounded w-full max-w-md"
       >
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-
-        {error && (
-          <p className="mb-4 text-red-600 text-sm bg-red-100 p-2 rounded">
-            {error}
-          </p>
-        )}
 
         <div className="mb-4">
           <label className="block mb-1 text-gray-700">Email</label>

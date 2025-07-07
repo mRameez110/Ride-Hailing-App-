@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { registerUser } from "../services/authService";
+import { registerUser } from "../utils/authService";
 import { useNavigate } from "react-router-dom";
+import { showErrorToast, showSuccessToast } from "../utils/errorHandler";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -26,8 +27,10 @@ const Register = () => {
 
     try {
       await registerUser(formData);
-      navigate("/");
+      showSuccessToast("Registration successful, please login");
+      navigate("/login");
     } catch (err) {
+      showErrorToast(err);
       setError(err?.response?.data?.message || "Registration failed");
     }
   };

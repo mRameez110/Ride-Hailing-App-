@@ -7,11 +7,11 @@ export const getRideHistory = async () => {
   return res.data.rides;
 };
 
-  export const getCurrentRide = async () => {
-    const res = await axiosInstance.get("/rides/current");
-    console.log("see response of current ride ", res);
-    return res.data.ride;
-  };
+export const getCurrentRide = async () => {
+  const res = await axiosInstance.get("/rides/current");
+  console.log("see response of current ride ", res);
+  return res.data.ride;
+};
 
 export const requestRide = async (rideData) => {
   const res = await axiosInstance.post("/rides", rideData);

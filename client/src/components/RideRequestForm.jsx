@@ -11,8 +11,8 @@ const RideRequestForm = ({ onSubmit }) => {
     if (!pickup || !dropoff) return alert("All fields are required");
 
     const rideData = {
-      pickupLocation: pickup, 
-      dropLocation: dropoff, 
+      pickupLocation: pickup,
+      dropLocation: dropoff,
       rideType,
     };
 

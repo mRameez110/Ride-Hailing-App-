@@ -1,4 +1,4 @@
-const Ride = require("../models/rideModel");
+const Ride = require("../models/Ride");
 
 exports.requestRideService = async (data, userId) => {
   const { pickupLocation, dropLocation, rideType } = data;
@@ -14,12 +14,15 @@ exports.requestRideService = async (data, userId) => {
 };
 
 exports.getRideHistoryService = async (userId, userType) => {
+  console.log("User ID and Type in ride history service", userId, userType);
   const query =
     userType === "driver" ? { driver: userId } : { passenger: userId };
 
-  const rides = await Ride.find(query)
+  const rides = await Ride.find()
     .populate("passenger", "name")
     .sort({ createdAt: -1 });
+
+  console.log("check ride history", rides);
 
   return rides;
 };
@@ -37,22 +40,21 @@ exports.updateRideStatusService = async (rideId, status) => {
   if (!ride) throw new Error("Ride not found");
 
   ride.status = status;
-
-  // assign driver if accepting
   if (status === "Accepted" && !ride.driver) {
-    ride.driver = ride.driver || ride.passenger; // optional fallback
+    ride.driver = ride.driver || ride.passenger;
   }
-
   await ride.save();
+  console.log("see updated ride", ride);
   return ride;
 };
 
 exports.getCurrentRideService = async (userId, userType) => {
-  const query =
-    userType === "driver"
-      ? { driver: userId, status: "In Progress" }
-      : { passenger: userId, status: "In Progress" };
+  // const query =
+  //   userType === "driver"
+  //     ? { driver: userId, status: "In Progress" }
+  //     : { passenger: userId, status: "In Progress" };
 
+  const query = { status: "In Progress" };
   const ride = await Ride.findOne(query);
   return ride;
 };

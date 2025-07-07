@@ -1,8 +1,11 @@
 const errorHandler = (err, req, res, next) => {
   console.error(err.stack);
 
-  const errorMessage = err.message || "Something Bad";
-  const errorCode = err.errorCode || 500;
+  const errorCode = err.statusCode || 500;
+  const errorMessage =
+    errorCode == 500
+      ? "Internal Server Error"
+      : err.message || "An error occurred";
 
   res.status(errorCode).json({
     status: false,

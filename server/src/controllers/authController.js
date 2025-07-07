@@ -1,6 +1,11 @@
+const {
+  UserRegisterService,
+  userLoginService,
+} = require("../services/authServices");
+
 const registerUser = async (req, res, next) => {
   try {
-    const { newUser } = await registerService(req.body);
+    const { newUser } = await UserRegisterService(req.body);
 
     res.status(201).json({
       message: "User registered successfully",
@@ -18,8 +23,8 @@ const registerUser = async (req, res, next) => {
 
 const loginUser = async (req, res, next) => {
   try {
-    validation(req.body, loginValidationSchema);
-    const { user, token } = await loginService(req.body);
+    // validation(req.body, loginValidationSchema);
+    const { user, token } = await userLoginService(req.body);
 
     res.status(200).json({
       message: "Login successfully",
@@ -29,4 +34,9 @@ const loginUser = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
 };

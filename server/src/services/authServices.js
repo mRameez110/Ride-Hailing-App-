@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 const generateToken = (user) => {
   return jwt.sign({ id: user._id, type: user.type }, process.env.JWT_SECRET, {
@@ -6,7 +7,7 @@ const generateToken = (user) => {
   });
 };
 
-const registerService = async (data) => {
+const UserRegisterService = async (data) => {
   const { name, email, password, type } = data;
 
   const existing = await User.findOne({ email });
@@ -21,7 +22,7 @@ const registerService = async (data) => {
   return { newUser: user };
 };
 
-const loginService = async (data) => {
+const userLoginService = async (data) => {
   const { email, password } = data;
   const user = await User.findOne({ email });
   if (!user) {
@@ -49,6 +50,6 @@ const loginService = async (data) => {
 };
 
 module.exports = {
-  registerService,
-  loginService,
+  UserRegisterService,
+  userLoginService,
 };

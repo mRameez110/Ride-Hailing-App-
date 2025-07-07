@@ -4,11 +4,24 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true); // loading flag
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
-    if (savedUser) setUser(JSON.parse(savedUser));
+    const savedToken = localStorage.getItem("token");
+
+    if (savedUser && savedToken) {
+      try {
+        setUser(JSON.parse(savedUser));
+        setToken(savedToken);
+      } catch {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+      }
+    }
+
+    setLoading(false); // done loading
   }, []);
 
   const login = (userData, jwtToken) => {
@@ -22,11 +35,11 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     setUser(null);
-    setToken("");
+    setToken(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

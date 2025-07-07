@@ -61,7 +61,10 @@ exports.updateRideStatus = async (req, res, next) => {
 exports.getCurrentRide = async (req, res, next) => {
   try {
     console.log("Current ride API hit", req.user);
+    
     const ride = await getCurrentRideService(req.user._id, req.user.type);
+
+    console.log("Current Ride Service Response:", ride);
 
     if (!ride) {
       return res.status(404).json({ message: "No active ride found" });

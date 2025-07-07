@@ -12,6 +12,7 @@ const RideHistory = () => {
   const fetchRides = async () => {
     try {
       const data = await getRideHistory();
+      console.log("see ride history data", data);
       setRides(data);
     } catch (error) {
       showErrorToast(error);

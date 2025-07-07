@@ -35,7 +35,7 @@ const DriverDashboard = () => {
 
   useEffect(() => {
     if (user?.type === "driver") {
-      fetchRequestedRides(); // ✅ page open hote hi yeh run hota
+      fetchRequestedRides();
     }
   }, [user]);
 
